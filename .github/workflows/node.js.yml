@@ -18,17 +18,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Setup Node and enable pnpm caching via lockfile
+      # Setup Node and enable npm caching via package-lock.json
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-      # Install deps using the lockfile, fail if it needs changes
+      # (Optional) Ensure lockfile exists to use npm ci
+      - name: Ensure npm lockfile exists
+        run: test -f package-lock.json
+
+      # Install deps using the lockfile; faster & reproducible
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Test with coverage
         run: npm run test:coverage
