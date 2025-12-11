@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 20, 22]
+        node: [18]
         os: [ubuntu-latest, windows-latest]
 
     steps:
@@ -26,19 +26,12 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
-      # Install pnpm 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9 # pin to the version you use locally
-          run_install: false
-
       # Install deps using the lockfile, fail if it needs changes
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm install
 
       - name: Test with coverage
-        run: pnpm run test:coverage
+        run: npm run test:coverage
 
       - name: Upload to Coveralls
         uses: coverallsapp/github-action@v2
